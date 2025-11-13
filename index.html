@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Retirement Countdown 🎉</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #ffffff;
+      background: #050716;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* === LAVA LAMP BACKGROUND (ACTUALLY ANIMATED) === */
+    .lava-background {
+      position: fixed;
+      inset: -25%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      width: 45vmax;
+      height: 45vmax;
+      border-radius: 40%;
+      filter: blur(40px);
+      opacity: 0.85;
+      mix-blend-mode: screen;
+    }
+
+    .blob1 {
+      background: #ff9a9e;
+      top: 5%;
+      left: 0%;
+      animation: blobMove1 32s ease-in-out infinite alternate;
+    }
+
+    .blob2 {
+      background: #a18cd1;
+      top: 40%;
+      right: -10%;
+      animation: blobMove2 38s ease-in-out infinite alternate;
+    }
+
+    .blob3 {
+      background: #9fd3ff;
+      bottom: -10%;
+      left: 10%;
+      animation: blobMove3 44s ease-in-out infinite alternate;
+    }
+
+    .blob4 {
+      background: #ffeaa7;
+      top: 0%;
+      right: 30%;
+      animation: blobMove4 50s ease-in-out infinite alternate;
+      opacity: 0.6;
+    }
+
+    @keyframes blobMove1 {
+      0%   { transform: translate3d(-10%, -10%, 0) scale(1);     border-radius: 40% 60% 55% 45%; }
+      50%  { transform: translate3d(5%, 10%, 0)   scale(1.15);  border-radius: 55% 45% 50% 50%; }
+      100% { transform: translate3d(15%, -5%, 0)  scale(1.25);  border-radius: 60% 40% 45% 55%; }
+    }
+
+    @keyframes blobMove2 {
+      0%   { transform: translate3d(10%, 0%, 0)   scale(1.1);   border-radius: 45% 55% 60% 40%; }
+      50%  { transform: translate3d(-5%, 15%, 0)  scale(1.25);  border-radius: 60% 40% 40% 60%; }
+      100% { transform: translate3d(-15%, -10%,0) scale(1.15);  border-radius: 50% 50% 55% 45%; }
+    }
+
+    @keyframes blobMove3 {
+      0%   { transform: translate3d(0%, 10%, 0)   scale(1);     border-radius: 40% 60% 55% 45%; }
+      50%  { transform: translate3d(10%, -5%, 0)  scale(1.2);   border-radius: 55% 45% 50% 50%; }
+      100% { transform: translate3d(-5%, -15%, 0) scale(1.1);   border-radius: 60% 40% 45% 55%; }
+    }
+
+    @keyframes blobMove4 {
+      0%   { transform: translate3d(0%, -10%, 0)  scale(1.05);  border-radius: 50% 50% 45% 55%; }
+      50%  { transform: translate3d(-10%, 5%, 0)  scale(1.2);   border-radius: 40% 60% 55% 45%; }
+      100% { transform: translate3d(5%, 15%, 0)   scale(1.1);   border-radius: 60% 40% 50% 50%; }
+    }
+
+    /* === CARD / COUNTDOWN (STAYS STILL) === */
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 92%;
+      max-width: 900px;
+      margin: 20px;
+      padding: 32px 26px 26px;
+      border-radius: 24px;
+      background: rgba(5, 8, 26, 0.92);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 40px 40px 32px;
+      }
+    }
+
+    .header-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 720px) {
+      .header-row {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 span.emoji {
+      font-size: 1.8rem;
+    }
+
+    .subheading {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      max-width: 430px;
+      line-height: 1.5;
+    }
+
+    .subheading strong {
+      font-weight: 600;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+    }
+
+    .tag span {
+      font-size: 1rem;
+    }
+
+    .countdown-card {
+      margin-top: 10px;
+      padding: 22px 18px 18px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #2c3e50 0%, #1a1f3b 45%, #111320 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    @media (min-width: 768px) {
+      .countdown-card {
+        padding: 24px 22px 20px;
+      }
+    }
+
+    .label {
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 12px;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .countdown-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    .time-unit {
+      position: relative;
+      padding: 14px 10px 12px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.35));
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .time-unit::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .time-unit .value {
+      position: relative;
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
+    }
+
+    .time-unit .label-small {
+      position: relative;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.17em;
+      opacity: 0.85;
+    }
+
+    .footer-text {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .footer-text strong {
+      font-weight: 600;
+    }
+
+    .date-highlight {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+
+    .date-highlight span.emoji {
+      font-size: 1.1rem;
+    }
+
+    .soon {
+      color: #f1c40f;
+      font-weight: 600;
+    }
+
+    .tiny-note {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      opacity: 0.65;
+    }
+
+    .celebrate {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(46, 204, 113, 0.2);
+      border: 1px solid rgba(46, 204, 113, 0.7);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .celebrate span.emoji {
+      font-size: 1.4rem;
+    }
+
+    .milestone {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      display: none;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .milestone span.emoji {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated lava background -->
+  <div class="lava-background">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div class="blob blob4"></div>
+  </div>
+
+  <main class="container">
+    <div class="header-row">
+      <div>
+        <div class="tag">
+          <span>🎉</span>
+          <span>The Big Countdown</span>
+        </div>
+        <h1>
+          <span>Mom, you’re almost retired!<span class="emoji"> 🥳</span></span>
+        </h1>
+      </div>
+      <p class="subheading">
+        This is your little countdown from me.
+        Every morning you can watch the time ticking down to your
+        <strong>well-earned retirement</strong>. One day at a time – you’ve got this. 💖
+      </p>
+    </div>
+
+    <section class="countdown-card">
+      <div class="label">Time until retirement</div>
+      <div class="countdown-grid">
+        <div class="time-unit">
+          <div class="value" id="months">0</div>
+          <div class="label-small">Months</div>
+        </div>
+        <div class="time-unit">
+          <div class="value" id="days">0</div>
+          <div class="label-small">Days</div>
+        </div>
+        <div class="time-unit">
+          <div class="value" id="hours">00</div>
+          <div class="label-small">Hours</div>
+        </div>
+        <div class="time-unit">
+          <div class="value" id="minutes">00</div>
+          <div class="label-small">Minutes</div>
+        </div>
+        <div class="time-unit">
+          <div class="value" id="seconds">00</div>
+          <div class="label-small">Seconds</div>
+        </div>
+      </div>
+
+      <div class="footer-text">
+        <div>
+          Your official retirement date is
+          <span class="date-highlight">
+            <span class="emoji">📅</span>
+            <span id="retirementDateText"></span>
+          </span>
+        </div>
+        <div id="statusLine">
+          That’s <strong><span id="totalDaysText">0</span> days</strong> from now. The finish line is in sight!
+        </div>
+      </div>
+
+      <div id="milestoneMessage" class="milestone">
+        <span class="emoji" id="milestoneEmoji">🌟</span>
+        <span id="milestoneText"></span>
+      </div>
+
+      <div id="celebrateMessage" class="celebrate">
+        <span class="emoji">🎊</span>
+        <span><strong>Happy Retirement, Mom!</strong> Your countdown is complete – it’s time to relax, celebrate, and enjoy this new chapter. I’m so proud of you. 💐</span>
+      </div>
+
+      <div class="tiny-note">
+        This clock uses your computer’s time — as long as the time on the computer is correct, this countdown stays accurate.
+      </div>
+    </section>
+  </main>
+
+<script>
+  // >>> SET HER REAL RETIREMENT DATE & TIME HERE <<<
+  // new Date(year, monthIndex, day, hour24, minute, second)
+  // monthIndex: 0 = Jan, 1 = Feb, ..., 11 = Dec
+  const retirementDate = new Date(2026, 1, 12, 17, 0, 0);
+
+  // Optional: tweak these messages if you like
+  function getMilestoneMessage(totalDays) {
+    if (totalDays <= 0) return null;
+
+    if (totalDays > 120) {
+      return {
+        emoji: "🌈",
+        text: "There’s still a little way to go, but every day brings you closer to your new chapter. I’m so grateful for everything you’ve done, Mom."
+      };
+    } else if (totalDays > 60) {
+      return {
+        emoji: "🌟",
+        text: "You’re into the final stretch now. Keep going, Mom. future you is going to be so happy you made it here."
+      };
+    } else if (totalDays > 30) {
+      return {
+        emoji: "🎈",
+        text: "Under two months to go! I hope you feel proud every time you see this countdown. You’ve worked so hard for this."
+      };
+    } else if (totalDays > 14) {
+      return {
+        emoji: "💐",
+        text: "Less than a month left! Start dreaming about slow mornings, coffee, and zero work emails."
+      };
+    } else if (totalDays > 7) {
+      return {
+        emoji: "🎉",
+        text: "We’re almost in the final two weeks! I can’t wait to celebrate with you and see you finally get the rest you deserve."
+      };
+    } else if (totalDays > 3) {
+      return {
+        emoji: "🔥",
+        text: "Single-digit day countdown! You’re so close, Mom. If work feels long this week, just peek at this clock and smile."
+      };
+    } else if (totalDays > 1) {
+      return {
+        emoji: "🥳",
+        text: `Only ${totalDays} days left. I’m so proud of you and everything you’ve done for our family. Almost party time.`
+      };
+    } else {
+      return {
+        emoji: "✨",
+        text: "Last day! You did it, Mom. One more little push and then it’s all celebration, rest, and new adventures."
+      };
+    }
+  }
+
+  function formatRetirementDate(date) {
+    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+    return date.toLocaleDateString(undefined, options);
+  }
+
+  function initCountdown() {
+    const monthsEl   = document.getElementById("months");
+    const daysEl     = document.getElementById("days");
+    const hoursEl    = document.getElementById("hours");
+    const minutesEl  = document.getElementById("minutes");
+    const secondsEl  = document.getElementById("seconds");
+    const retirementDateTextEl = document.getElementById("retirementDateText");
+    const statusLineEl         = document.getElementById("statusLine");
+    const totalDaysTextEl      = document.getElementById("totalDaysText");
+
+    // Milestone elements are optional; we guard their use
+    const milestoneBox    = document.getElementById("milestoneMessage");
+    const milestoneEmoji  = document.getElementById("milestoneEmoji");
+    const milestoneTextEl = document.getElementById("milestoneText");
+    const celebrateEl     = document.getElementById("celebrateMessage");
+
+    if (!monthsEl || !daysEl || !hoursEl || !minutesEl || !secondsEl || !statusLineEl || !retirementDateTextEl || !totalDaysTextEl) {
+      console.error("Countdown: missing one or more required DOM elements.");
+      return;
+    }
+
+    retirementDateTextEl.textContent = formatRetirementDate(retirementDate);
+
+    function updateCountdown() {
+      const now   = new Date();
+      const diffMs = retirementDate.getTime() - now.getTime();
+
+      if (isNaN(diffMs)) {
+        statusLineEl.textContent = "There was an error reading the retirement date. Please check the script.";
+        console.error("Invalid retirementDate. Check the Date(...) line.");
+        return;
+      }
+
+      if (diffMs <= 0) {
+        // Time's up
+        monthsEl.textContent  = 0;
+        daysEl.textContent    = 0;
+        hoursEl.textContent   = "00";
+        minutesEl.textContent = "00";
+        secondsEl.textContent = "00";
+
+        statusLineEl.innerHTML = "<strong>It’s here!</strong> You’re officially retired, Mom. 🎉";
+
+        if (celebrateEl) celebrateEl.style.display = "flex";
+        if (milestoneBox) milestoneBox.style.display = "none";
+        return;
+      }
+
+      if (celebrateEl) celebrateEl.style.display = "none";
+
+      // TOTAL seconds remaining
+      let totalSeconds = Math.floor(diffMs / 1000);
+
+      // Clock-style breakdown:
+      // seconds: 0–59, minutes: 0–59, hours: 0–23, then days/months
+      const seconds = totalSeconds % 60;
+      totalSeconds  = (totalSeconds - seconds) / 60; // minutes
+
+      const minutes = totalSeconds % 60;
+      totalSeconds  = (totalSeconds - minutes) / 60; // hours
+
+      const hours   = totalSeconds % 24;
+      totalSeconds  = (totalSeconds - hours) / 24;   // days
+
+      // Approx months as 30 days each for display
+      const days   = totalSeconds % 30;
+      const months = (totalSeconds - days) / 30;
+
+      monthsEl.textContent  = months;
+      daysEl.textContent    = days;
+      hoursEl.textContent   = String(hours).padStart(2, "0");
+      minutesEl.textContent = String(minutes).padStart(2, "0");
+      secondsEl.textContent = String(seconds).padStart(2, "0");
+
+      const totalDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+      totalDaysTextEl.textContent = totalDays;
+
+      if (totalDays <= 10 && totalDays > 0) {
+        statusLineEl.innerHTML =
+          `Only <strong>${totalDays} day${totalDays === 1 ? "" : "s"}</strong> left. <span class="soon">So close!</span>`;
+      } else {
+        statusLineEl.innerHTML =
+          `That’s <strong>${totalDays} day${totalDays === 1 ? "" : "s"}</strong> from now. The finish line is in sight!`;
+      }
+
+      // Milestone (if those elements exist in your HTML)
+      if (milestoneBox && milestoneEmoji && milestoneTextEl) {
+        const milestone = getMilestoneMessage(totalDays);
+        if (milestone) {
+          milestoneBox.style.display = "flex";
+          milestoneEmoji.textContent = milestone.emoji;
+          milestoneTextEl.textContent = milestone.text + " – Love, Andrew.";
+        } else {
+          milestoneBox.style.display = "none";
+        }
+      }
+    }
+
+    updateCountdown();                // run immediately
+    setInterval(updateCountdown, 1000); // then every second
+  }
+
+  // Make sure DOM is ready no matter where the script tag lives
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCountdown);
+  } else {
+    initCountdown();
+  }
+</script>
+
+</body>
+</html>
